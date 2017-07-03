@@ -1,5 +1,3 @@
-# TODO: DO DOCUMENTATION!!!
-
 import os
 import shutil
 from urllib.parse import urlparse
@@ -10,6 +8,12 @@ import urldownload
 
 __author__ = "Partha Das"
 __version__ = "1.0.2"
+
+# DONE: Keep a list of downloaded files and where folders were created. Clean
+# up based on that instead of blindly deleting everything.
+# DONE*: extract the extension using regex, since the filter list is already
+# known (But the original way allowed to see if the downloaded file was
+# actually useful
 
 def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
             remove_dir=False, filters=['.jpg', '.gif', '.png'], use_regex=False):
@@ -99,8 +103,10 @@ def str2bool(v):
 if __name__ == '__main__':
     print("Hello world")
     parser = argparse.ArgumentParser()
-    parser.add_argument("-i", "--input", help="Path to the input csv file")
-    parser.add_argument("-c", "--column", help="Name of the column which has the urls")
+    parser.add_argument("-i", "--input", help="Path to the input csv file",
+                        required=True)
+    parser.add_argument("-c", "--column", help="""Name of the column which has
+                        the urls""", required=True)
     parser.add_argument("-d", "--download", help="""Path to folder where the
                         downloaded files should be stored. Default is tmp,
                         at the current folder of the script. Recommended to
