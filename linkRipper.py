@@ -19,7 +19,6 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
             remove_dir=False, filters=['.jpg', '.gif', '.png'], use_regex=False):
 
 
-    results = open('linkDownloadReport.txt', 'w')
     with open(input_csv, 'r') as file:
         csvobject = pd.read_csv(file)
 
@@ -35,6 +34,8 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
     if not os.path.exists(downloadLocation):
         os.makedirs(downloadLocation)
 
+    report_Location = os.path.join(downloadLocation, 'linkDownloadReport.txt')
+    results = open(report_Location, 'w')
     imageList = csvobject[column_name]
 
     for idx, item, in enumerate(imageList):
@@ -45,10 +46,11 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 totalPath = os.path.join(downloadLocation, filename)
                 if os.path.exists(totalPath):
                     print("[%d] Url: %s, already exists, skipping." % (idx, item))
+                    results.write(item + ', ' + filename + ', Skipped\n')
                 else:
                     print("[%d] Url: %s, Downloading..." % (idx, item), end='\r')
                     ret = urldownload.downloadImages(item, totalPath)
-                    results.write(item + ', ' + str(ret) + '\n')
+                    results.write(item + ', ' + filename + ',' + str(ret) + '\n')
                     print("[%d] Url: %s, Downloaded --> %r" % (idx, item, ret))
                     if ret:
                         fileList.append(totalPath)
@@ -56,7 +58,7 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 print("""[%d] Url: %s \nFilter pattern not found or the link doesn't
                       link directly to the image, skipping.""" %(idx,
                                                                            item))
-                results.write(item + ', False')
+                results.write(item + ',' + filename + ', False\n')
         else:
             parsed = urlparse(item)
             root, ext = os.path.splitext(parsed.path)
@@ -65,10 +67,11 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 totalPath = os.path.join(downloadLocation, filename)
                 if os.path.exists(totalPath):
                     print("[%d] Url: %s, already exists, skipping." % (idx, item))
+                    results.write(item + ', ' + filename + ', Skipped\n')
                 else:
                     print("[%d] Url: %s, Downloading..." % (idx, item), end='\r')
                     ret = urldownload.downloadImages(item, totalPath)
-                    results.write(item + ', ' + str(ret) + '\n')
+                    results.write(item + ', ' + filename + ',' + str(ret) + '\n')
                     print("[%d] Url: %s, Downloaded --> %r" % (idx, item, ret))
                     if ret:
                         fileList.append(totalPath)
@@ -76,7 +79,7 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 print("""[%d] Url: %s \nFilter pattern not found or the link doesn't
                       link directly to the image, skipping.""" %(idx,
                                                                            item))
-                results.write(item + ', False')
+                results.write(item + ',' + filename + ', False\n')
 
 
     print("Downloading finished.")
