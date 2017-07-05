@@ -58,7 +58,7 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 print("""[%d] Url: %s \nFilter pattern not found or the link doesn't
                       link directly to the image, skipping.""" %(idx,
                                                                            item))
-                results.write(item + ',' + filename + ', False\n')
+                results.write(item + ', False\n')
         else:
             parsed = urlparse(item)
             root, ext = os.path.splitext(parsed.path)
@@ -79,7 +79,7 @@ def get_URLs(input_csv, column_name, downloadLocation=None, zip_location=None,
                 print("""[%d] Url: %s \nFilter pattern not found or the link doesn't
                       link directly to the image, skipping.""" %(idx,
                                                                            item))
-                results.write(item + ',' + filename + ', False\n')
+                results.write(item + ', False\n')
 
 
     print("Downloading finished.")
