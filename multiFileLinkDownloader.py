@@ -11,17 +11,13 @@ import linkRipper
 
 
 
-dir_list = [str(x + 1) for x in range(6)]
-parent_dir = '4chanData'
+dir_list = ['../cultural-marxism/']
+parent_dir = ''
 
 idx = 0
 
 a = time.time()
-columns = ['index', 'country_name', 'com', 'raw_com', 'name', 'sub', 'replies', 'now']
-valids = ['www.youtube.com', 'youtu.be']
-searchfor = ['cuck' 'globalist' 'sjw' 'tendies' 'maga' 'based' 'kek' 'pepe' 'sjw' 'globalist' 'establishment' 'elite' 'neocon' 'sanders' 'gop' 'trump' 'communist' 'tpp' 'borders' 'mccain' 'soros' 'china' 'mexico'] # Leave empty for no filtering
 
-mainStore = pd.DataFrame(columns=columns)
 idx = 0
 for sub_dir in dir_list:
     files = glob.glob(os.path.join(parent_dir, sub_dir, '*.csv'))

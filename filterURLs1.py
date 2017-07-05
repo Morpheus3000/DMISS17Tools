@@ -12,6 +12,7 @@ import os
 import time
 import pandas as pd
 import re
+import datetime
 
 def cleaned_url(s):
     """ Function to clean up multiple trailing ')', '.', '*' """
@@ -37,7 +38,7 @@ def filterURLs(inputfile, outputfile, searchfor):
         searchfor: The filter list to be searched for in the urls
     """
 
-    with open(inputfile, 'r') as file:
+    with open(inputfile, 'r', encoding="utf8") as file:
         csvobject = pd.read_csv(file)
 
     urls = csvobject.body.str.contains('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', na=False)
@@ -45,11 +46,13 @@ def filterURLs(inputfile, outputfile, searchfor):
     urlcomments = pd.DataFrame(csvobject[urls])
     newurlcomments = urlcomments.body.str.extractall("(?P<imageurl>http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+)")
 
-    columns = ['index','match','imageurl','name', 'author', 'ups', 'name']
+    columns = ['index','match','created_time','created_unix','imageurl','name', 'author', 'ups', 'name']
 
     contextdf = pd.DataFrame(columns=columns)
     indices = []
     matches = []
+    unixdates= []
+    dates = []
     imageurls = []
     bodies = []
     authors = []
@@ -61,12 +64,16 @@ def filterURLs(inputfile, outputfile, searchfor):
         tmp = cleaned_url(line.imageurl)
         if len(re.findall(r'|'.join(searchfor), tmp)) > 0:
             newindex=index[0]
+            newformatteddate= datetime.datetime.utcfromtimestamp(csvobject.created_unix[newindex]).strftime('%d-%m-%Y %H:%M:%S')
+            newdate=csvobject.created_time[newindex]
             newbody = csvobject.body[newindex]
             newauthor = csvobject.author[newindex]
             newsubreddit = csvobject.subreddit[newindex]
             newscore= csvobject.score[newindex]
             indices.append(newindex)
             matches.append(index[1])
+            unixdates.append(newdate)
+            dates.append(newformatteddate)
             imageurls.append(line.imageurl)
             bodies.append(newbody)
             authors.append(newauthor)
@@ -75,6 +82,8 @@ def filterURLs(inputfile, outputfile, searchfor):
 
     contextdf['index'] = indices
     contextdf['match'] = matches
+    contextdf['created_unix'] = unixdates
+    contextdf['created_time'] = dates
     contextdf['imageurl'] = imageurls
     contextdf['name'] = bodies
     contextdf['author'] = authors
@@ -87,8 +96,8 @@ if __name__ == '__main__':
     print('code started')
     #ENTER SEARCH TERMS
     searchfor = ['.png', '.gif', '.jpg']
-    inputfile = str('RC_2008-05.csv')
-    outputfile = str(inputfile[:-5]) + '-imageurl.csv'
+    inputfile = str('../cultural-marxism-images-2014.csv')
+    outputfile = str(inputfile[:-4]) + '-imageurl.csv'
     print("\n\n\nJob parameters:\n\tInput ---> %s\n\tFilters ---> %s\n\tOutput --->%s\n\n\n" % (inputfile, '|'.join(searchfor), outputfile))
     filterURLs(inputfile, outputfile, searchfor)
     print(time.time() - starttime)
