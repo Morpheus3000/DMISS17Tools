@@ -97,8 +97,10 @@ if __name__ == '__main__':
     starttime = time.time()
     print('code started')
     #ENTER SEARCH TERMS
-    searchfor = ['.png', '.gif', '.jpg']
-    inputfile = str('RC_2008-05.csv')
+    #searchfor = ['.png', '.gif', '.jpg']
+    searchfor =['']
+    #inputfile = str('RC_2008-05.csv')
+    inputfile = str('wikipedialinks-the_donald-28-06-2017-12-10-2017.csv')
     outputfile = str(inputfile[:-4]) + '-imageurl.csv'
     print("\n\n\nJob parameters:\n\tInput ---> %s\n\tFilters ---> %s\n\tOutput --->%s\n\n\n" % (inputfile, '|'.join(searchfor), outputfile))
     filterURLs(inputfile, outputfile, searchfor)
